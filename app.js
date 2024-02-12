@@ -1,4 +1,5 @@
 const amqp = require("amqplib");
+const config = require("./config");
 
 //step 1 : Connect to the rabbitmq server
 //step 2 : Create a new channel
@@ -8,14 +9,15 @@ const amqp = require("amqplib");
 //step 6 : Consume messages from the queue
 
 async function consumeMessages() {
-  const connection = await amqp.connect("amqp://localhost");
+  const connection = await amqp.connect(config.rabbitMQ.url);
   const channel = await connection.createChannel();
 
-  await channel.assertExchange("smtpExchange", "direct");
+  const exchangeName= config.rabbitMQ.exchangeName
+  await channel.assertExchange(exchangeName, "direct");
 
   const q = await channel.assertQueue("mailQueue");
 
-  await channel.bindQueue(q.queue, "smtpExchange", "otp");
+  await channel.bindQueue(q.queue, exchangeName, "otp");
 
   channel.consume(q.queue, (msg) => {
     const data = JSON.parse(msg.content);
@@ -26,4 +28,3 @@ async function consumeMessages() {
 
 consumeMessages();
 
-module.exports = consumeMessages;

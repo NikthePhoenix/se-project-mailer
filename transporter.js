@@ -1,21 +1,23 @@
 const nodemailer = require('nodemailer');
+const config = require("./config");
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
   auth: {
-    user: 'elitestormers123@gmail.com',
-    pass: 'sjoy mvdr btup ezmu',
+    user: config.mail.user,
+    pass: config.mail.pass,
   },
 });
 
 //transporter.verify().then(console.log).catch(console.error);
-
+const from = config.mail.from;
 transporter.sendMail({
-    from: '"Your Name" <youremail@gmail.com>', // sender address
+    from: from, // sender address
     to: "nikgov23@gmail.com", // list of receivers
-    subject: "Medium @edigleyssonsilva ✔", // Subject line
-    text: "There is a new article. It's about sending emails, check it out!", // plain text body
-    html: "<b>There is a new article. It's about sending emails, check it out!</b>", // html body
+    subject: "Bot mail", // Subject line
+    text: "This was not sent by a human being", // plain text body
+    html: "<b>This was not sent by a human being</b>", // html body
   }).then(info => {
     console.log({info});
   }).catch(console.error);
